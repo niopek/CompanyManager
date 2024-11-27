@@ -100,6 +100,9 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.Urls.Add("http://localhost:5170");
+
+
 //app.UseHttpsRedirection();
 
 app.UseAuthentication();

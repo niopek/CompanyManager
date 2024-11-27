@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CompanyManager.Library.Models;
+namespace CompanyManager.Library.Models.Models;
 
 public class Note
 {

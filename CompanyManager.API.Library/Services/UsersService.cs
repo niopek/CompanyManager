@@ -1,5 +1,5 @@
 ﻿using CompanyManager.API.Library.Common;
-using CompanyManager.Library.Models;
+using CompanyManager.Library.Models.Models;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System;
@@ -83,7 +83,7 @@ public class UsersService
             }
 
             // Generowanie tokenu
-            var token = GenerateToken(user);
+            var token = GenerateToken(user, 60);
 
             if(token == null)
             {
@@ -102,7 +102,7 @@ public class UsersService
         }
     }
 
-    public string? GenerateToken(UserModel user)
+    public AuthToken? GenerateToken(UserModel user, int validTimeMinutes)
     {
         var tokenHandler = new JwtSecurityTokenHandler();
         var jwtKey = _configuration["Jwt:Key"];
@@ -121,14 +121,21 @@ public class UsersService
                 new Claim(ClaimTypes.Name, user.Username),
                 new Claim(ClaimTypes.Email, user.Email)
             }),
-            Expires = DateTime.UtcNow.AddMinutes(30), // Czas ważności tokenu
+            Expires = DateTime.UtcNow.AddMinutes(validTimeMinutes), // Czas ważności tokenu
             SigningCredentials = new SigningCredentials(
                 new SymmetricSecurityKey(key),
                 SecurityAlgorithms.HmacSha256Signature)
         };
 
         var token = tokenHandler.CreateToken(tokenDescriptor);
-        return tokenHandler.WriteToken(token);
+        if(token  != null)
+        {
+            var returnToken = tokenHandler.WriteToken(token);
+            return new AuthToken(returnToken, DateTime.Now.AddMinutes(validTimeMinutes));
+        }
+
+
+        return null;
     }
 
     public async Task StoreToken(string token, int userId)

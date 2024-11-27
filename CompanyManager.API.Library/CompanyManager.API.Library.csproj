@@ -18,7 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\CompanyManager.Library\CompanyManager.Library.csproj" />
+    <ProjectReference Include="..\CompanyManager.Library.Models\CompanyManager.Library.Models.csproj" />
   </ItemGroup>
 
 </Project>
