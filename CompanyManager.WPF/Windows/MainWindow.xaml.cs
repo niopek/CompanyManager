@@ -1,8 +1,4 @@
-﻿using CommunityToolkit.Mvvm.Messaging;
-using CompanyManager.Library.Models.Models;
-using CompanyManager.WPF.ViewModels;
-using Microsoft.Extensions.DependencyInjection;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -19,14 +15,13 @@ using System.Windows.Shapes;
 namespace CompanyManager.WPF.Windows
 {
     /// <summary>
-    /// Logika interakcji dla klasy LoginWindow.xaml
+    /// Logika interakcji dla klasy MainWindow.xaml
     /// </summary>
-    public partial class LoginWindow : Window
+    public partial class MainWindow : Window
     {
-        public LoginWindow()
+        public MainWindow()
         {
             InitializeComponent();
-
         }
     }
 }

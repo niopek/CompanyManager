@@ -5,10 +5,141 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:CompanyManager.WPF.Windows"
         xmlns:vm="clr-namespace:CompanyManager.WPF.ViewModels"
-        d:DataContext="{d:DesignInstance Type=vm:LoginWindowViewModel, IsDesignTimeCreatable=True}"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+        TextElement.FontWeight="Regular"
+        TextElement.FontSize="13"
+        TextOptions.TextFormattingMode="Ideal"
+        TextOptions.TextRenderingMode="Auto"
+        Background="{DynamicResource MaterialDesignPaper}"
+        FontFamily="{DynamicResource MaterialDesignFont}"
+        d:DataContext="{d:DesignInstance Type=vm:LoginWindowViewModel, IsDesignTimeCreatable=False}"
         mc:Ignorable="d"
-        Title="LoginWindow" Height="450" Width="800">
+        Title="LoginWindow" Height="550" Width="500"
+        WindowStartupLocation="CenterScreen"
+         >
     <Grid>
-        <TextBlock Text="{Binding Test}" />
+        <Grid.RowDefinitions>
+            <RowDefinition Height="2*"/>
+            <RowDefinition Height="3*"/>
+            <RowDefinition Height="3*" />
+            <RowDefinition Height="2*" />
+            <RowDefinition Height="2*"/>
+        </Grid.RowDefinitions>
+
+        <Label Content="Logowanie"
+               HorizontalAlignment="Center"
+               VerticalAlignment="Bottom"
+               FontSize="20"
+               FontWeight="SemiBold"
+               Visibility="{Binding LoginView}" />
+
+        <Label Content="Rejestracja"
+               HorizontalAlignment="Center"
+               VerticalAlignment="Bottom"
+               FontSize="20"
+               FontWeight="SemiBold"
+               Visibility="{Binding RegisterView}" />
+
+        <GroupBox Grid.Row="1"
+                  Header="Login"
+                  Width="300"
+                  Height="110"
+                  Visibility="{Binding LoginView}">
+            <TextBox BorderThickness="1"
+                     BorderBrush="SteelBlue"
+                     Margin="10"
+                     VerticalContentAlignment="Center"
+                     Padding="2"
+                     Text="{Binding LoginText}" />
+        </GroupBox>
+
+        <GroupBox Grid.Row="1"
+                  Header="Login"
+                  Width="300"
+                  Height="110"
+                  Visibility="{Binding RegisterView}">
+            <TextBox BorderThickness="1"
+                     BorderBrush="SteelBlue"
+                     Margin="10"
+                     VerticalContentAlignment="Center"
+                     Padding="2"
+                     Text="{Binding RegisterLoginText}" />
+        </GroupBox>
+
+        <GroupBox Grid.Row="2"
+                  Header="Password"
+                  Width="300"
+                  Height="110"
+                  Visibility="{Binding LoginView}">
+            <TextBox BorderThickness="1"
+                     BorderBrush="SteelBlue"
+                     Margin="10"
+                     VerticalContentAlignment="Center"
+                     Padding="2"
+                     Text="{Binding PasswordText}"/>
+        </GroupBox>
+        
+        <GroupBox Grid.Row="2"
+                  Header="Password"
+                  Width="300"
+                  Height="110"
+                  Visibility="{Binding RegisterView}">
+            <TextBox BorderThickness="1"
+                     BorderBrush="SteelBlue"
+                     Margin="10"
+                     VerticalContentAlignment="Center"
+                     Padding="2"
+                     Text="{Binding RegisterPasswordText}" />
+        </GroupBox>
+
+        <Button Content="Zaloguj"
+                Grid.Row="3"
+                Width="250"
+                Height="40"
+                Margin="10"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Top"
+                Visibility="{Binding LoginView}"
+                Command="{Binding LoginCommand}"/>
+
+        <Button Content="Zarejestruj"
+                Grid.Row="3"
+                Width="250"
+                Height="40"
+                Margin="10"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Top"
+                Visibility="{Binding RegisterView}"
+                Command="{Binding RegisterCommand}" />
+
+        <TextBlock VerticalAlignment="Top"
+                   HorizontalAlignment="Center"
+                   Text="{Binding InfoText}"
+                   FontSize="16"/>
+        
+        <Button Content="Nie masz konta? zarejestruj sie!"
+                Background="Transparent"
+                BorderBrush="Transparent"
+                Grid.Row="4"
+                FontSize="20"
+                Foreground="Black"
+                HorizontalContentAlignment="Right"
+                VerticalContentAlignment="Bottom"
+                Command="{Binding GoToRegisterPageCommand}"
+                Visibility="{Binding LoginView}"/>
+
+        <Button Content="Wróc do logowania"
+                Background="Transparent"
+                BorderBrush="Transparent"
+                Foreground="Black"
+                Grid.Row="4"
+                FontSize="20"
+                HorizontalContentAlignment="Right"
+                VerticalContentAlignment="Bottom"
+                Command="{Binding GoToBackToLoginPageCommand}"
+                Visibility="{Binding RegisterView}" />
+
+
     </Grid>
 </Window>

@@ -10,4 +10,8 @@
     <ProjectReference Include="..\CompanyManager.Library.Models\CompanyManager.Library.Models.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Interfaces\" />
+  </ItemGroup>
+
 </Project>

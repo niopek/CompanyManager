@@ -1,0 +1,153 @@
+﻿<UserControl x:Class="CompanyManager.WPF.Views.NotesView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:CompanyManager.WPF.Views"
+             xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+             xmlns:vm="clr-namespace:CompanyManager.WPF.ViewModels"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+             TextElement.FontWeight="Regular"
+             TextElement.FontSize="13"
+             TextOptions.TextFormattingMode="Ideal"
+             TextOptions.TextRenderingMode="Auto"
+             Background="{DynamicResource MaterialDesignPaper}"
+             FontFamily="{DynamicResource MaterialDesignFont}"
+             d:DataContext="{d:DesignInstance Type=vm:NotesViewModel, IsDesignTimeCreatable=False}"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="4*"/>
+        </Grid.ColumnDefinitions>
+
+        
+        <ListView ItemsSource="{Binding ListOfNotes}"
+                  SelectedItem="{Binding SelectedNote}"
+                  >
+            <ListView.Resources>
+                <Style TargetType="GridViewColumnHeader"
+                       BasedOn="{StaticResource {x:Type GridViewColumnHeader}}">
+                    <Setter Property="Height"
+                            Value="40" />
+                    <Setter Property="Padding"
+                            Value="10 2" />
+                    <Setter Property="FontSize"
+                            Value="16" />
+                    <Setter Property="Foreground"
+                            Value="Black" />
+                </Style>
+                <Style x:Key="CustomRowStyle" TargetType="ListViewItem"
+                       BasedOn="{StaticResource {x:Type ListViewItem}}">
+                    <Setter Property="Height"
+                            Value="80" />
+                </Style>
+
+            </ListView.Resources>
+            <ListView.ItemContainerStyle>
+                <StaticResource ResourceKey="CustomRowStyle" />
+            </ListView.ItemContainerStyle>
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn Header="Notatki" DisplayMemberBinding="{Binding Title}" 
+                                    />
+                </GridView>
+            </ListView.View>
+        </ListView>
+
+        <Grid Grid.Column="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="60" />
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <GroupBox Header="Tytul"
+                      Padding="5"
+                      Margin="5"
+                      Visibility="{Binding NoteDetailsVisibility}">
+                <TextBox Text="{Binding SelectedNote.Title}"
+                         TextWrapping="Wrap"
+                         Background="Transparent"
+                         AcceptsReturn="True"
+                         BorderThickness="0"/>
+            </GroupBox>
+            <GroupBox Header="Notatka"
+                      Padding="5"
+                      Margin="5"
+                      Grid.Row="2"
+                      Visibility="{Binding NoteDetailsVisibility}">
+                <RichTextBox TextChanged="RichTextBox_TextChanged"
+                             x:Name="richTextBoxNote">
+                </RichTextBox>
+            </GroupBox>
+
+            <StackPanel Orientation="Horizontal"
+                        Grid.Row="1"
+                        Margin="5"
+                        Visibility="{Binding NoteDetailsVisibility}">
+                <Button Content="B"
+                        FontWeight="Bold"
+                        Click="BoldButton_Click"
+                        Margin="3"
+                        Padding="0"
+                        Width="25"
+                        Height="25"
+                        HorizontalContentAlignment="Center"
+                        VerticalContentAlignment="Center"
+                        />
+                <Button Content="I"
+                        FontStyle="Italic"
+                        Click="ItalicButton_Click"
+                        Margin="3"
+                        Width="20"
+                        Height="20"
+                        HorizontalContentAlignment="Center"
+                        VerticalContentAlignment="Center" />
+                <Button Content="U"
+                        Click="UnderlineButton_Click"
+                        Margin="3"
+                        Width="20"
+                        Height="20"
+                        HorizontalContentAlignment="Center"
+                        VerticalContentAlignment="Center" />
+                
+                <ComboBox x:Name="FontSizeComboBox"
+                          Width="60"
+                          SelectionChanged="FontSizeComboBox_SelectionChanged"
+                          Margin="3"
+                          Height="20"
+                          FontSize="10"
+                          HorizontalContentAlignment="Center"
+                          VerticalContentAlignment="Center">
+                    
+                    <ComboBoxItem Content="12" />
+                    <ComboBoxItem Content="14" />
+                    <ComboBoxItem Content="16" />
+                    <ComboBoxItem Content="18" />
+                    <ComboBoxItem Content="24" />
+                    <ComboBoxItem Content="36" />
+                </ComboBox>
+            </StackPanel>
+
+            <Button Command="{Binding TestCommand}" Grid.Row="2"
+                    Width="100"
+                    Height="30"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Bottom"
+                    Content="test"
+                    Visibility="{Binding NoteDetailsVisibility}" />
+            
+            <Button Command="{Binding SaveNoteCommand}"
+                    Grid.Row="2"
+                    Width="100"
+                    Height="30"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Bottom"
+                    Content="save"
+                    Visibility="{Binding NoteDetailsVisibility}" />
+        </Grid>
+
+    </Grid>
+</UserControl>

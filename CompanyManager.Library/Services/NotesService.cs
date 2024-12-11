@@ -25,7 +25,7 @@ public class NotesService
         _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
     }
 
-    public async Task<List<Note>?> GetAllNotesAsync(string token)
+    public async Task<List<Note>> GetAllNotesAsync(string token)
     {
         SetAuthorizationHeader(token);
         var response = await _httpClient.GetAsync($"{_apiUrl}GetAllNotes");
@@ -37,10 +37,10 @@ public class NotesService
             {
                 PropertyNameCaseInsensitive = true // Ignoruj wielkość liter w nazwach pól
             };
-            return JsonSerializer.Deserialize<List<Note>>(content, options);
+            return JsonSerializer.Deserialize<List<Note>>(content, options) ?? new();
         }
 
-        return null;
+        return new();
     }
 
     public async Task<string?> CreateNoteAsync(string token, Note note)
