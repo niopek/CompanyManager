@@ -16,7 +16,6 @@
         d:DataContext="{d:DesignInstance Type=vm:LoginWindowViewModel, IsDesignTimeCreatable=False}"
         mc:Ignorable="d"
         Title="LoginWindow" Height="550" Width="500"
-        WindowStartupLocation="CenterScreen"
          >
     <Grid>
         <Grid.RowDefinitions>

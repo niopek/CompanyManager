@@ -62,14 +62,26 @@ public class Database
 
             using (IDbConnection connection = new SqlConnection(connectionString))
             {
-                var result = await connection.ExecuteAsync(
+                var dynamicParameters = new DynamicParameters();
+
+                foreach (var property in typeof(T).GetProperties())
+                {
+                    var value = property.GetValue(parameters);
+                    dynamicParameters.Add($"@{property.Name}", value);
+                }
+
+                dynamicParameters.Add("ReturnValue", dbType: DbType.Int32, direction: ParameterDirection.ReturnValue);
+
+                // Wykonanie procedury
+                await connection.ExecuteAsync(
                     storedProcedure,
-                    parameters,
+                    dynamicParameters,
                     commandType: CommandType.StoredProcedure,
                     commandTimeout: 120
                 );
 
-                return result;
+                // Pobieramy wartość zwróconą przez RETURN
+                return dynamicParameters.Get<int>("ReturnValue");
             }
         }
 }

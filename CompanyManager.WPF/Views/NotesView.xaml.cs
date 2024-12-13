@@ -56,7 +56,7 @@ namespace CompanyManager.WPF.Views
                 _debounceToken = new CancellationTokenSource();
                 var token = _debounceToken.Token;
 
-                Task.Delay(500, token).ContinueWith(t =>
+                Task.Delay(1000, token).ContinueWith(t =>
                 {
                     if (!t.IsCanceled)
                     {
@@ -114,23 +114,75 @@ namespace CompanyManager.WPF.Views
         {
             var selection = richTextBoxNote.Selection;
 
-            var currentDecorations = selection.GetPropertyValue(Inline.TextDecorationsProperty);
-            if (currentDecorations == TextDecorations.Underline)
+            if (!selection.IsEmpty)
             {
-                selection.ApplyPropertyValue(Inline.TextDecorationsProperty, null);
-            }
-            else
-            {
-                selection.ApplyPropertyValue(Inline.TextDecorationsProperty, TextDecorations.Underline);
+                // Pobierz aktualne dekoracje
+                var currentDecorations = selection.GetPropertyValue(Inline.TextDecorationsProperty);
+
+                if (currentDecorations is TextDecorationCollection decorations &&
+                    decorations.Contains(TextDecorations.Underline[0]))
+                {
+                    // Usuń podkreślenie
+                    selection.ApplyPropertyValue(Inline.TextDecorationsProperty, null);
+                }
+                else
+                {
+                    // Dodaj podkreślenie
+                    selection.ApplyPropertyValue(Inline.TextDecorationsProperty, TextDecorations.Underline);
+                }
             }
         }
 
         private void FontSizeComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (FontSizeComboBox.SelectedItem is ComboBoxItem selectedItem && double.TryParse(selectedItem.Content.ToString(), out double fontSize))
+            if (FontSizeComboBox.SelectedItem is ComboBoxItem selectedItem && richTextBoxNote != null && double.TryParse(selectedItem.Content.ToString(), out double fontSize))
             {
                 richTextBoxNote.Selection.ApplyPropertyValue(TextElement.FontSizeProperty, fontSize);
             }
         }
+        private void AlignLeft_Click(object sender, RoutedEventArgs e)
+        {
+            richTextBoxNote.Selection.ApplyPropertyValue(Paragraph.TextAlignmentProperty, TextAlignment.Left);
+        }
+
+        private void AlignCenter_Click(object sender, RoutedEventArgs e)
+        {
+            richTextBoxNote.Selection.ApplyPropertyValue(Paragraph.TextAlignmentProperty, TextAlignment.Center);
+        }
+
+        private void AlignRight_Click(object sender, RoutedEventArgs e)
+        {
+            richTextBoxNote.Selection.ApplyPropertyValue(Paragraph.TextAlignmentProperty, TextAlignment.Right);
+        }
+
+        private void AlignJustify_Click(object sender, RoutedEventArgs e)
+        {
+            richTextBoxNote.Selection.ApplyPropertyValue(Paragraph.TextAlignmentProperty, TextAlignment.Justify);
+        }
+
+        private void LineSpacingComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (sender is ComboBox comboBox && richTextBoxNote != null && comboBox.SelectedItem is ComboBoxItem selectedItem && double.TryParse(selectedItem.Tag.ToString(), out double lineHeight))
+            {
+                ChangeLineSpacing(lineHeight);
+            }
+        }
+        private void ChangeLineSpacing(double lineHeight)
+        {
+            if (richTextBoxNote != null && richTextBoxNote.Document != null)
+            {
+                // Pobieramy wszystkie bloki w dokumencie
+                foreach (var block in richTextBoxNote.Document.Blocks)
+                {
+                    if (block is Paragraph paragraph)
+                    {
+                        // Ustawiamy LineHeight dla każdego akapitu
+                        paragraph.LineHeight = lineHeight;
+                    }
+                }
+            }
+
+        }
+
     }
 }

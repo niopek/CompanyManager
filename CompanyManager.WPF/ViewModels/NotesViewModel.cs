@@ -29,6 +29,12 @@ public partial class NotesViewModel : ObservableObject
     [ObservableProperty]
     private Visibility _noteDetailsVisibility;
 
+    [ObservableProperty]
+    private string? selectedNoteInit;
+
+    [ObservableProperty]
+    private bool hasChanges = false;
+
     public NotesViewModel(NotesService notesService)
     {
         NoteService = notesService;
@@ -49,6 +55,14 @@ public partial class NotesViewModel : ObservableObject
         if(SelectedNote is not null)
         {
             SelectedNote.HTMLDescription = message;
+            if(SelectedNote.HTMLDescription != SelectedNoteInit)
+            {
+                HasChanges = true;
+            }
+            else
+            {
+                HasChanges = false;
+            }
         }
     }
 
@@ -56,9 +70,16 @@ public partial class NotesViewModel : ObservableObject
     {
         if (newValue != null)
         {
-            // Twoja akcja na zmianę SelectedNote
+            // Twoja akcja na zmianę SelectedNote  // cos innego bo selectednote juz tu jest inne chyba
+            if(oldValue != null)
+            {
+                SaveNote().RunSynchronously();
+            }
             WeakReferenceMessenger.Default.Send(newValue.HTMLDescription, "NotesView");
             NoteDetailsVisibility = Visibility.Visible;
+            SelectedNoteInit = newValue.HTMLDescription;
+            HasChanges = false;
+            
         }
     }
 
@@ -80,7 +101,16 @@ public partial class NotesViewModel : ObservableObject
     {
         if (App.User is not null && App.User.Token is not null && SelectedNote is not null)
         {
-            var result = await NoteService.UpdateNoteAsync(App.User.Token.Token, SelectedNote);
+            if (HasChanges)
+            {
+                var result = await NoteService.UpdateNoteAsync(App.User.Token.Token, SelectedNote);
+                if (result)
+                {
+                    SelectedNoteInit = SelectedNote.HTMLDescription;
+                    HasChanges = false;
+                }
+            }
+            
         }
     }
 

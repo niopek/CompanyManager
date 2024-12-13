@@ -16,7 +16,7 @@
              FontFamily="{DynamicResource MaterialDesignFont}"
              d:DataContext="{d:DesignInstance Type=vm:NotesViewModel, IsDesignTimeCreatable=False}"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
+             d:DesignHeight="650" d:DesignWidth="1200">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
@@ -39,115 +39,203 @@
                     <Setter Property="Foreground"
                             Value="Black" />
                 </Style>
-                <Style x:Key="CustomRowStyle" TargetType="ListViewItem"
-                       BasedOn="{StaticResource {x:Type ListViewItem}}">
-                    <Setter Property="Height"
-                            Value="80" />
-                </Style>
 
             </ListView.Resources>
             <ListView.ItemContainerStyle>
-                <StaticResource ResourceKey="CustomRowStyle" />
+                <Style TargetType="ListViewItem">
+                    <Setter Property="HorizontalContentAlignment"
+                            Value="Stretch" />
+                    <Setter Property="Height"
+                            Value="30" />
+                </Style>
             </ListView.ItemContainerStyle>
             <ListView.View>
                 <GridView>
-                    <GridViewColumn Header="Notatki" DisplayMemberBinding="{Binding Title}" 
-                                    />
+                    <GridViewColumn Header="Notatki">
+                        <GridViewColumn.DisplayMemberBinding>
+                            <Binding Path="Title"
+                                     Converter="{StaticResource TextTrimmingConverter}"
+                                     ConverterParameter="20" />
+                        </GridViewColumn.DisplayMemberBinding>
+                    </GridViewColumn>
                 </GridView>
             </ListView.View>
         </ListView>
 
-        <Grid Grid.Column="1">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="60" />
-                <RowDefinition Height="*"/>
-            </Grid.RowDefinitions>
-            <GroupBox Header="Tytul"
-                      Padding="5"
-                      Margin="5"
-                      Visibility="{Binding NoteDetailsVisibility}">
+        <Border Grid.Column="1"
+                Margin="5"
+                Background="WhiteSmoke"
+                BorderBrush="{StaticResource MaterialDesignDarkSeparatorBackground}"
+                BorderThickness="2"
+                Padding="10"
+                CornerRadius="5"
+                Visibility="{Binding NoteDetailsVisibility}">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+
                 <TextBox Text="{Binding SelectedNote.Title}"
                          TextWrapping="Wrap"
-                         Background="Transparent"
-                         AcceptsReturn="True"
-                         BorderThickness="0"/>
-            </GroupBox>
-            <GroupBox Header="Notatka"
-                      Padding="5"
-                      Margin="5"
-                      Grid.Row="2"
-                      Visibility="{Binding NoteDetailsVisibility}">
-                <RichTextBox TextChanged="RichTextBox_TextChanged"
-                             x:Name="richTextBoxNote">
-                </RichTextBox>
-            </GroupBox>
+                         AcceptsReturn="False"
+                         Style="{StaticResource MaterialDesignOutlinedTextBox}"
+                         materialDesign:HintAssist.Hint="Title"
+                         Height="40"
+                         Padding="10 5"
+                         FontSize="16"
+                         Visibility="{Binding NoteDetailsVisibility}" />
 
-            <StackPanel Orientation="Horizontal"
-                        Grid.Row="1"
-                        Margin="5"
-                        Visibility="{Binding NoteDetailsVisibility}">
-                <Button Content="B"
-                        FontWeight="Bold"
-                        Click="BoldButton_Click"
-                        Margin="3"
-                        Padding="0"
-                        Width="25"
-                        Height="25"
-                        HorizontalContentAlignment="Center"
-                        VerticalContentAlignment="Center"
-                        />
-                <Button Content="I"
-                        FontStyle="Italic"
-                        Click="ItalicButton_Click"
-                        Margin="3"
-                        Width="20"
-                        Height="20"
-                        HorizontalContentAlignment="Center"
-                        VerticalContentAlignment="Center" />
-                <Button Content="U"
-                        Click="UnderlineButton_Click"
-                        Margin="3"
-                        Width="20"
-                        Height="20"
-                        HorizontalContentAlignment="Center"
-                        VerticalContentAlignment="Center" />
+                <ToolBarTray Grid.Row="1"
+                             Visibility="{Binding NoteDetailsVisibility}"
+                             Margin="0 5">
+                    <ToolBar ClipToBounds="False"
+                             Style="{StaticResource MaterialDesignToolBar}">
+                        <Button Content="{materialDesign:PackIcon Kind=ContentSave}"
+                                ToolTip="Save" Command="{Binding SaveNoteCommand}" IsEnabled="{Binding HasChanges}"/>
+                        <Separator />
+                        <Button Content="{materialDesign:PackIcon Kind=FormatAlignLeft}"
+                                ToolTip="Align Left"
+                                Click="AlignLeft_Click"
+                                />
+                        <Button Content="{materialDesign:PackIcon Kind=FormatAlignCenter}"
+                                ToolTip="Align Center"
+                                Click="AlignCenter_Click" />
+                        <Button Content="{materialDesign:PackIcon Kind=FormatAlignRight}"
+                                ToolTip="Align Right"
+                                Click="AlignRight_Click" />
+                        <Button Content="{materialDesign:PackIcon Kind=FormatAlignJustify}"
+                                ToolTip="Justify"
+                                Click="AlignJustify_Click" />
+                        <Separator />
+                        <Button Content="{materialDesign:PackIcon Kind=FormatBold}"
+                                ToolTip="Bold"
+                                Click="BoldButton_Click" />
+                        <Button Content="{materialDesign:PackIcon Kind=FormatItalic}"
+                                ToolTip="Italic"
+                                Click="ItalicButton_Click" />
+                        <Button Content="{materialDesign:PackIcon Kind=FormatUnderline}"
+                                ToolTip="Underline"
+                                Click="UnderlineButton_Click" />
+                        <Separator />
+                        <Label VerticalAlignment="Center"
+                               Content="Font size:" />
+                        <ComboBox   x:Name="FontSizeComboBox"
+                                    SelectionChanged="FontSizeComboBox_SelectionChanged">
+                            <ComboBoxItem Content="12" />
+                            <ComboBoxItem Content="14" IsSelected="True" />
+                            <ComboBoxItem Content="16" />
+                            <ComboBoxItem Content="18" />
+                            <ComboBoxItem Content="24" />
+                            <ComboBoxItem Content="36" />
+                        </ComboBox>
+
+                        <Label Content="Line Spacing:"
+                               VerticalAlignment="Center" />
+                        <ComboBox SelectionChanged="LineSpacingComboBox_SelectionChanged">
+                            <ComboBoxItem Content="1"
+                                          Tag="1" />
+                            <ComboBoxItem Content="3"
+                                          Tag="3" />
+                            <ComboBoxItem Content="5"
+                                          Tag="5" />
+                            <ComboBoxItem Content="7"
+                                          Tag="7" />
+                            <ComboBoxItem Content="10"
+                                          Tag="10"
+                                          IsSelected="True" />
+                            <ComboBoxItem Content="12"
+                                          Tag="12" />
+                            <ComboBoxItem Content="15"
+                                          Tag="15" />
+                            <ComboBoxItem Content="20"
+                                          Tag="20"/>
+                            <ComboBoxItem Content="30"
+                                          Tag="30" />
+                            <ComboBoxItem Content="40"
+                                          Tag="40" />
+                        </ComboBox>
+                        <Separator />
+                        <Label Content="Has changes:" 
+                               VerticalAlignment="Center"/>
+                        <CheckBox IsChecked="{Binding HasChanges}"
+                                  VerticalAlignment="Center" IsEnabled="False" />
+
+                    </ToolBar>
+                </ToolBarTray>
+
+                <!--<StackPanel x:Name="StackPanelTextButtons"
+                            Orientation="Horizontal"
+                            Grid.Row="1"
+                            Margin="5"
+                            Visibility="{Binding NoteDetailsVisibility}">
+                    <Button Content="B"
+                            FontWeight="Bold"
+                            Click="BoldButton_Click"
+                            Margin="3"
+                            Padding="0"
+                            Width="25"
+                            Height="25"
+                            HorizontalContentAlignment="Center"
+                            VerticalContentAlignment="Center" />
+                    <Button Content="I"
+                            FontStyle="Italic"
+                            Click="ItalicButton_Click"
+                            Margin="3"
+                            Width="20"
+                            Height="20"
+                            HorizontalContentAlignment="Center"
+                            VerticalContentAlignment="Center" />
+                    <Button Content="U"
+                            Click="UnderlineButton_Click"
+                            Margin="3"
+                            Width="20"
+                            Height="20"
+                            HorizontalContentAlignment="Center"
+                            VerticalContentAlignment="Center" />
+
+                    <ComboBox x:Name="FontSizeComboBox"
+                              Width="60"
+                              SelectionChanged="FontSizeComboBox_SelectionChanged"
+                              Margin="3"
+                              Height="20"
+                              FontSize="10"
+                              HorizontalContentAlignment="Center"
+                              VerticalContentAlignment="Center">
+
+                        <ComboBoxItem Content="12" />
+                        <ComboBoxItem Content="14" />
+                        <ComboBoxItem Content="16" />
+                        <ComboBoxItem Content="18" />
+                        <ComboBoxItem Content="24" />
+                        <ComboBoxItem Content="36" />
+                    </ComboBox>
+                </StackPanel>-->
+
+                <Border Grid.Row="2"
+                        BorderBrush="Black"
+                        BorderThickness="1"
+                        CornerRadius="5">
+                    <RichTextBox x:Name="richTextBoxNote"
+                                 TextChanged="RichTextBox_TextChanged"
+                                 Visibility="{Binding NoteDetailsVisibility}"
+                                 Background="Transparent"
+                                 BorderBrush="Transparent"
+                                 BorderThickness="0"
+                                 Padding="10"
+                                 FontSize="14"
+                                 Margin="3"
+                                 
+                                 materialDesign:HintAssist.Hint="Notatka">
+                    </RichTextBox>
+                </Border>
                 
-                <ComboBox x:Name="FontSizeComboBox"
-                          Width="60"
-                          SelectionChanged="FontSizeComboBox_SelectionChanged"
-                          Margin="3"
-                          Height="20"
-                          FontSize="10"
-                          HorizontalContentAlignment="Center"
-                          VerticalContentAlignment="Center">
-                    
-                    <ComboBoxItem Content="12" />
-                    <ComboBoxItem Content="14" />
-                    <ComboBoxItem Content="16" />
-                    <ComboBoxItem Content="18" />
-                    <ComboBoxItem Content="24" />
-                    <ComboBoxItem Content="36" />
-                </ComboBox>
-            </StackPanel>
 
-            <Button Command="{Binding TestCommand}" Grid.Row="2"
-                    Width="100"
-                    Height="30"
-                    HorizontalAlignment="Right"
-                    VerticalAlignment="Bottom"
-                    Content="test"
-                    Visibility="{Binding NoteDetailsVisibility}" />
-            
-            <Button Command="{Binding SaveNoteCommand}"
-                    Grid.Row="2"
-                    Width="100"
-                    Height="30"
-                    HorizontalAlignment="Left"
-                    VerticalAlignment="Bottom"
-                    Content="save"
-                    Visibility="{Binding NoteDetailsVisibility}" />
-        </Grid>
+            </Grid>
+        </Border>
+        
+        
 
     </Grid>
 </UserControl>
