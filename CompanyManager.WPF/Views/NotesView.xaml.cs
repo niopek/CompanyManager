@@ -34,15 +34,20 @@ namespace CompanyManager.WPF.Views
             });
         }
 
+        private bool messageSend = true;
+
         private void SetUpRichTextBoxContent(string message)
         {
             var flowDoc = new FlowDocument();
-            var range = new TextRange(flowDoc.ContentStart, flowDoc.ContentEnd);
-            using (var stream = new MemoryStream(Encoding.UTF8.GetBytes(message)))
+            if (!string.IsNullOrWhiteSpace(message))
             {
-                range.Load(stream, DataFormats.Xaml);
+                var range = new TextRange(flowDoc.ContentStart, flowDoc.ContentEnd);
+                using (var stream = new MemoryStream(Encoding.UTF8.GetBytes(message)))
+                {
+                    range.Load(stream, DataFormats.Xaml);
+                }
             }
-
+            
             richTextBoxNote.Document = flowDoc;
         }
 
@@ -55,8 +60,8 @@ namespace CompanyManager.WPF.Views
                 _debounceToken?.Cancel();
                 _debounceToken = new CancellationTokenSource();
                 var token = _debounceToken.Token;
-
-                Task.Delay(1000, token).ContinueWith(t =>
+                messageSend = false;
+                Task.Delay(300, token).ContinueWith(t =>
                 {
                     if (!t.IsCanceled)
                     {
@@ -72,6 +77,7 @@ namespace CompanyManager.WPF.Views
                                 {
                                     var message = reader.ReadToEnd();
                                     WeakReferenceMessenger.Default.Send(message, "NotesViewModel");
+                                    messageSend = true;
                                 }
                             }
                         });
@@ -184,5 +190,14 @@ namespace CompanyManager.WPF.Views
 
         }
 
+        private async void ListView_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            var tesa = test.SelectedItem;
+
+            if (!messageSend)
+            {
+                await Task.Delay(1000);
+            }
+        }
     }
 }

@@ -23,9 +23,21 @@
             <ColumnDefinition Width="4*"/>
         </Grid.ColumnDefinitions>
 
-        
+        <Button Width="35"
+                Height="35"
+                Style="{StaticResource MaterialDesignIconForegroundButton}"
+                Content="{materialDesign:PackIcon Kind=NotePlus}"
+                VerticalAlignment="Top"
+                HorizontalAlignment="Right"
+                Margin="5 2"
+                ToolTip="Add Note"
+                Panel.ZIndex="5"
+                Command="{Binding AddNewNoteCommand}"/>
+
         <ListView ItemsSource="{Binding ListOfNotes}"
                   SelectedItem="{Binding SelectedNote}"
+                  x:Name="test"
+                  PreviewMouseLeftButtonDown="ListView_PreviewMouseLeftButtonDown"
                   >
             <ListView.Resources>
                 <Style TargetType="GridViewColumnHeader"
@@ -51,7 +63,8 @@
             </ListView.ItemContainerStyle>
             <ListView.View>
                 <GridView>
-                    <GridViewColumn Header="Notatki">
+                    <GridViewColumn Header="Notatki"
+                                    Width="150">
                         <GridViewColumn.DisplayMemberBinding>
                             <Binding Path="Title"
                                      Converter="{StaticResource TextTrimmingConverter}"
@@ -77,15 +90,31 @@
                     <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
 
-                <TextBox Text="{Binding SelectedNote.Title}"
-                         TextWrapping="Wrap"
-                         AcceptsReturn="False"
-                         Style="{StaticResource MaterialDesignOutlinedTextBox}"
-                         materialDesign:HintAssist.Hint="Title"
-                         Height="40"
-                         Padding="10 5"
-                         FontSize="16"
-                         Visibility="{Binding NoteDetailsVisibility}" />
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="140"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBox Text="{Binding SelectedNote.Title}"
+                             TextWrapping="Wrap"
+                             AcceptsReturn="False"
+                             Style="{StaticResource MaterialDesignOutlinedTextBox}"
+                             materialDesign:HintAssist.Hint="Title"
+                             Height="40"
+                             Padding="10 5"
+                             FontSize="16"
+                             Visibility="{Binding NoteDetailsVisibility}" />
+
+                    <Button Grid.Column="1"
+                            VerticalAlignment="Center"
+                            Style="{StaticResource MaterialDesignRaisedDarkButton}"
+                            Content="DELETE NOTE"
+                            Margin="5 2"
+                            ToolTip="Add Note"
+                            Panel.ZIndex="5"
+                            Command="{Binding DeleteNoteCommand}" />
+                </Grid>
+                
 
                 <ToolBarTray Grid.Row="1"
                              Visibility="{Binding NoteDetailsVisibility}"

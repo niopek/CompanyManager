@@ -55,7 +55,7 @@ namespace CompanyManager.API.Controllers
             var result = await _notesService.CreateNoteAsync(userId, note.Title, note.HTMLDescription);
 
             if (result > 0)
-                return Ok($"Note created successfully with ID {result}");
+                return Ok($"{result}");
             else
                 return StatusCode(500, "An error occurred while creating the note.");
         }
@@ -75,7 +75,7 @@ namespace CompanyManager.API.Controllers
             var result = await _notesService.CreateEmptyNoteAsync(userId);
 
             if (result > 0)
-                return Ok($"Note created successfully with ID {result}");
+                return Ok($"{result}");
             else
                 return StatusCode(500, "An error occurred while creating the note.");
         }

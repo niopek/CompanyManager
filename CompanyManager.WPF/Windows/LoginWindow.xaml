@@ -40,57 +40,46 @@
                FontWeight="SemiBold"
                Visibility="{Binding RegisterView}" />
 
-        <GroupBox Grid.Row="1"
-                  Header="Login"
-                  Width="300"
-                  Height="110"
-                  Visibility="{Binding LoginView}">
-            <TextBox BorderThickness="1"
-                     BorderBrush="SteelBlue"
-                     Margin="10"
-                     VerticalContentAlignment="Center"
-                     Padding="2"
-                     Text="{Binding LoginText}" />
-        </GroupBox>
+        <TextBox 
+                 Width="300"
+                 Style="{StaticResource MaterialDesignOutlinedTextBox}"
+                 Grid.Row="1"
+                 materialDesign:HintAssist.Hint="Login"
+                 Height="60"
+                 VerticalContentAlignment="Center"
+                 Visibility="{Binding LoginView}"
+                 Text="{Binding LoginText}" />
 
-        <GroupBox Grid.Row="1"
-                  Header="Login"
-                  Width="300"
-                  Height="110"
-                  Visibility="{Binding RegisterView}">
-            <TextBox BorderThickness="1"
-                     BorderBrush="SteelBlue"
-                     Margin="10"
-                     VerticalContentAlignment="Center"
-                     Padding="2"
-                     Text="{Binding RegisterLoginText}" />
-        </GroupBox>
 
-        <GroupBox Grid.Row="2"
-                  Header="Password"
-                  Width="300"
-                  Height="110"
-                  Visibility="{Binding LoginView}">
-            <TextBox BorderThickness="1"
-                     BorderBrush="SteelBlue"
-                     Margin="10"
+        <TextBox Style="{StaticResource MaterialDesignOutlinedTextBox}"
+                 Grid.Row="1"
+                 materialDesign:HintAssist.Hint="Login"
+                 Width="300"
+                 Height="60"
+                 Visibility="{Binding RegisterView}"
+                 VerticalContentAlignment="Center"
+                 Text="{Binding RegisterLoginText}" />
+
+
+        <PasswordBox Style="{StaticResource MaterialDesignOutlinedPasswordBox}"
                      VerticalContentAlignment="Center"
-                     Padding="2"
-                     Text="{Binding PasswordText}"/>
-        </GroupBox>
-        
-        <GroupBox Grid.Row="2"
-                  Header="Password"
-                  Width="300"
-                  Height="110"
-                  Visibility="{Binding RegisterView}">
-            <TextBox BorderThickness="1"
-                     BorderBrush="SteelBlue"
-                     Margin="10"
+                     materialDesign:HintAssist.Hint="Hasło"
+                     Grid.Row="2"
+                     Width="300"
+                     Height="60"
+                     Visibility="{Binding LoginView}"
+                     materialDesign:PasswordBoxAssist.Password="{Binding PasswordText, Mode=TwoWay}" />
+
+
+        <PasswordBox Style="{StaticResource MaterialDesignOutlinedPasswordBox}"
+                     Grid.Row="2"
+                     materialDesign:HintAssist.Hint="Hasło"
+                     Width="300"
+                     Height="60"
+                     Visibility="{Binding RegisterView}"
                      VerticalContentAlignment="Center"
-                     Padding="2"
-                     Text="{Binding RegisterPasswordText}" />
-        </GroupBox>
+                     materialDesign:PasswordBoxAssist.Password="{Binding RegisterPasswordText, Mode=TwoWay}" />
+
 
         <Button Content="Zaloguj"
                 Grid.Row="3"
@@ -118,24 +107,20 @@
                    FontSize="16"/>
         
         <Button Content="Nie masz konta? zarejestruj sie!"
-                Background="Transparent"
-                BorderBrush="Transparent"
                 Grid.Row="4"
                 FontSize="20"
+                Height="40"
                 Foreground="Black"
-                HorizontalContentAlignment="Right"
-                VerticalContentAlignment="Bottom"
+                Style="{StaticResource MaterialDesignOutlinedLightButton}"
                 Command="{Binding GoToRegisterPageCommand}"
                 Visibility="{Binding LoginView}"/>
 
         <Button Content="Wróc do logowania"
-                Background="Transparent"
-                BorderBrush="Transparent"
                 Foreground="Black"
                 Grid.Row="4"
                 FontSize="20"
-                HorizontalContentAlignment="Right"
-                VerticalContentAlignment="Bottom"
+                Height="40"
+                Style="{StaticResource MaterialDesignOutlinedLightButton}"
                 Command="{Binding GoToBackToLoginPageCommand}"
                 Visibility="{Binding RegisterView}" />
 

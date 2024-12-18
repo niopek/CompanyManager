@@ -31,6 +31,8 @@ public partial class NotesViewModel : ObservableObject
 
     [ObservableProperty]
     private string? selectedNoteInit;
+    [ObservableProperty]
+    private string? selectedNoteTitleInit;
 
     [ObservableProperty]
     private bool hasChanges = false;
@@ -66,18 +68,21 @@ public partial class NotesViewModel : ObservableObject
         }
     }
 
-    partial void OnSelectedNoteChanged(Note? oldValue, Note? newValue)
+    async partial void OnSelectedNoteChanged(Note? oldValue, Note? newValue)
     {
         if (newValue != null)
         {
             // Twoja akcja na zmianę SelectedNote  // cos innego bo selectednote juz tu jest inne chyba
             if(oldValue != null)
             {
-                SaveNote().RunSynchronously();
+                if (App.User is not null && App.User.Token is not null && (oldValue.HTMLDescription != SelectedNoteInit || oldValue.Title != SelectedNoteTitleInit))
+                     await NoteService.UpdateNoteAsync(App.User.Token.Token, oldValue);
             }
+
             WeakReferenceMessenger.Default.Send(newValue.HTMLDescription, "NotesView");
             NoteDetailsVisibility = Visibility.Visible;
             SelectedNoteInit = newValue.HTMLDescription;
+            SelectedNoteTitleInit = newValue.Title;
             HasChanges = false;
             
         }
@@ -89,11 +94,6 @@ public partial class NotesViewModel : ObservableObject
         {
             ListOfNotes = new ObservableCollection<Note>(await NoteService.GetAllNotesAsync(App.User.Token.Token));
         }
-    }
-    [RelayCommand]
-    private void Test()
-    {
-        NoteDetailsVisibility = Visibility.Collapsed;
     }
 
     [RelayCommand]
@@ -107,11 +107,78 @@ public partial class NotesViewModel : ObservableObject
                 if (result)
                 {
                     SelectedNoteInit = SelectedNote.HTMLDescription;
+                    SelectedNoteTitleInit = SelectedNote.Title;
                     HasChanges = false;
                 }
             }
             
         }
     }
+
+    [RelayCommand]
+    public async Task AddNewNote()
+    {
+        if (App.User is not null && App.User.Token is not null)
+        {
+            var result = await NoteService.CreateEmptyNoteAsync(App.User.Token.Token);
+
+            if (string.IsNullOrWhiteSpace(result))
+            {
+                MessageBox.Show("Błąd przy dodawaniu nowej notatki");
+                return;
+            }
+
+            var parsingResult = int.TryParse(result, out int resultInt);
+
+            if (!parsingResult)
+            {
+                MessageBox.Show("Błąd przy dodawaniu nowej notatki");
+                return;
+            }
+
+            ListOfNotes.Add(new Note()
+            {
+                Id = resultInt,
+                HTMLDescription = "",
+                Title = "nowa notatka"
+            });
+
+        }
+    }
+
+    [RelayCommand]
+    public async Task DeleteNoteAsync()
+    {
+        if (App.User is not null && App.User.Token is not null && SelectedNote != null)
+        {
+            var confirmationResult = MessageBox.Show(
+            $"Czy na pewno chcesz usunąć notatkę \"{SelectedNote.Title}\"?",
+            "Potwierdzenie usunięcia",
+            MessageBoxButton.YesNo,
+            MessageBoxImage.Warning);
+
+            // Jeśli użytkownik wybrał "No", zakończ metodę
+            if (confirmationResult != MessageBoxResult.Yes)
+            {
+                return;
+            }
+
+
+            var result = await NoteService.DeleteNoteAsync(App.User.Token.Token, SelectedNote.Id);
+
+            if (!result)
+            {
+                MessageBox.Show("Błąd przy usuwaniu notatki");
+                return;
+            }
+
+            ListOfNotes.Remove(SelectedNote);
+            SelectedNote = null;
+            SelectedNoteInit = "";
+            SelectedNoteTitleInit = "";
+            NoteDetailsVisibility = Visibility.Collapsed;
+            HasChanges = false;
+        }
+     }
 
 }
